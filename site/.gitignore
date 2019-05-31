@@ -1,0 +1,5 @@
+.next
+src/cljs/
+pages/
+node_modules/
+out/
