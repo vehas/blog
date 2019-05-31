@@ -1,5 +1,6 @@
 .next
 src/cljs/
-pages/
+pages/*.js
+!pages/_*.js
 node_modules/
 out/
