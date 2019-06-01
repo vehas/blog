@@ -1,0 +1,23 @@
+{
+    "name": "Next lighthouse",
+    "short_name": "Next LH",
+    "icons": [{
+      "src": "favicon.png",
+      "sizes": "40x40",
+      "type": "image/png"
+    },{
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+    "start_url": "/",
+    "display": "fullscreen",
+    "theme_color": "#22548C",
+    "background_color": "#EAFFF4"
+  }

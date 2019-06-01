@@ -9,6 +9,7 @@
 
  :builds
  {:site {:target :npm-module
+         :optimizations :advanced
          :output-dir "site/src/cljs"
          :build-hooks [(shadow.next-js/create-pages)]
          :entries [blog.site]}}}
