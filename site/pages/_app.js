@@ -88,10 +88,15 @@ class MyApp extends App {
             // background-color: red;
             justify-content: center;
           }
+          @media (min-width: 800px) {
+            .ctw div {
+                max-width: 800px;
+                width: 800px;
+                // background-color: green;
+            }
+          }
           .ctw div {
-            max-width: 800px;
-            width: 800px;
-            // background-color: green;
+
           }
           `}</style>
       </Container>

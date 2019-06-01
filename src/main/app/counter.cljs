@@ -19,6 +19,7 @@
     [:span {:style {:position "absolute"
                     :top 0
                     :left "20%"
+                    :font-display "swap"
                     :font-size 300
                     :user-select "none"}};}}
         (str  @count-val)]
