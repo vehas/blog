@@ -15,16 +15,17 @@ const Nav_item = withRouter(({name, link, router: {pathname}}) => {
       <style jsx>{`
       div {
             flex:1;
+            cursor: pointer;
             text-align: center;
             list-style:none;
             letter-spacing: .1em;
             text-shadow: 0px 3px 1px rgba(0,0,0,0.1),
                     2px 4px 1px rgba(0,0,0,0.05),
                     -2px 4px 1px rgba(0,0,0,0.05);
-            -webkit-transition: all 0.1s ease-out;
-            -moz-transition:    all 0.1s ease-out;
-            -ms-transition:     all 0.1s ease-out;
-            -o-transition:      all 0.1s ease-out;
+            -webkit-transition: all 0.5s ease-out;
+            -moz-transition:    all 0.5s ease-out;
+            -ms-transition:     all 0.5s ease-out;
+            -o-transition:      all 0.5s ease-out;
           }
       div:hover {
         text-shadow: 0px 6px 2px rgba(0,0,0,0.1),
@@ -75,7 +76,24 @@ class MyApp extends App {
           <title>Veha blog</title>
         </Head>
         <Nav />
-        <Component {...pageProps} />
+        <div className="ctw">
+          <div>
+           <Component {...pageProps} className="content" />
+          </div>
+        </div>
+        <style jsx>{`
+          .ctw {
+            display: flex;
+            align-items: center;
+            // background-color: red;
+            justify-content: center;
+          }
+          .ctw div {
+            max-width: 800px;
+            width: 800px;
+            // background-color: green;
+          }
+          `}</style>
       </Container>
     )
   }

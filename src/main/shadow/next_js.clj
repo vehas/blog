@@ -1,8 +1,8 @@
 (ns shadow.next-js
   (:require
-    [clojure.java.io :as io]
-    [cljs.compiler :as cljs-comp]
-    [clojure.string :as str]))
+   [clojure.java.io :as io]
+   [cljs.compiler :as cljs-comp]
+   [clojure.string :as str]))
 
 (defn all-vars [state]
   (for [[ns ns-info] (get-in state [:compiler-env :cljs.analyzer/namespaces])
@@ -23,11 +23,13 @@
 
           page-var
           (-> ns-def :name name cljs-comp/munge)
-
+          
+          page-nested-path
+          (str/join (repeat (inc (count (re-seq #"/" page))) "../"))
           ;; Y U NO DATA THIS!
           content
           (str
-            "\nexport {" page-var " as default} from \"../src/cljs/" page-ns ".js\";")
+           "\nexport {" page-var " as default} from \"" page-nested-path "src/cljs/" page-ns ".js\";")
 
           out-dir
           (io/file "site" "pages")
@@ -36,6 +38,6 @@
           (io/file out-dir (str page ".js"))]
 
       (io/make-parents out-file)
-      (spit out-file content)
-      ))
+      (spit out-file content)))
+      
   state)

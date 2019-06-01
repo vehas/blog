@@ -1,9 +1,6 @@
 (ns blog.site
   (:require
-   [blog.app]
-   [blog.talk]
-   [blog.blog]
-   [blog.about]
+   [component.link :as link]
    [reagent.core :as r]
    [shadow.next-js :as sn]
    ["next/link" :default Link]))

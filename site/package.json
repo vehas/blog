@@ -19,6 +19,10 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-optipng": "^7.0.0",
+    "imagemin-svgo": "^7.0.0",
+    "next-optimized-images": "^2.5.1",
     "sw-precache-webpack-plugin": "^0.11.5"
   }
 }

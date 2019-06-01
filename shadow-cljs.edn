@@ -12,4 +12,8 @@
          :optimizations :advanced
          :output-dir "site/src/cljs"
          :build-hooks [(shadow.next-js/create-pages)]
-         :entries [blog.site]}}}
+         :entries [blog.site
+                   blog.app
+                   blog.talk
+                   blog.blog
+                   blog.about]}}}}

@@ -1,17 +1,3 @@
-if (
-    typeof window !== "undefined" &&
-    "serviceWorker" in navigator
-  ) {
-       navigator.serviceWorker
-       .register("/static/sw.js")
-       .then(function(reg) {
-         console.log("Service worker registered");
-       })
-       .catch(function(e) {
-         console.error("Error during worker registration:", e);
-       });
-     }
-
 WebFontConfig = {
       google: { families: [ 'Inconsolata','Prompt:300','Sarabun:100' ] }
 };
