@@ -11,6 +11,8 @@
     "react-dom": "^16.5.2",
     "react-draggable": "^3.3.0",
     "react-flip-move": "^3.0.3",
-    "react-highlight.js": "^1.0.7"
+    "react-highlight.js": "^1.0.7",
+    "react-monaco-editor": "^0.26.1",
+    "react-simple-code-editor": "^0.9.10"
   }
 }

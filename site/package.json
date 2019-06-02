@@ -13,15 +13,21 @@
     "@mdx-js/loader": "^1.0.16",
     "@zeit/next-mdx": "^1.2.0",
     "create-react-class": "^15.6.3",
+    "css-loader": "^2.1.1",
     "next": "^8.1.0",
     "next-offline": "^4.0.1",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.0",
+    "react-monaco-editor": "^0.26.1",
+    "react-simple-code-editor": "^0.9.10",
+    "style-loader": "^0.23.1"
   },
   "devDependencies": {
     "imagemin-mozjpeg": "^8.0.0",
     "imagemin-optipng": "^7.0.0",
     "imagemin-svgo": "^7.0.0",
+    "monaco-editor-webpack-plugin": "^1.7.0",
     "next-optimized-images": "^2.5.1",
     "sw-precache-webpack-plugin": "^0.11.5"
   }
