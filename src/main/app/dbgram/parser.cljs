@@ -29,16 +29,29 @@
   }
  ")
 
+(def table-basic2  " type user {
+   id: Int
+   name: String @faker(name: \"{{name.firstName}}\")
+ }
+ type pet{
+   owner_id: Int
+  }
+ ")
 (defparser parse-idl "
  S      = type*
  type   = ig? <'type'> ig? table-name ig? <'{'> column* <'}'> ig?
  table-name   = iden
- column = ig? iden ig? <':'> ig? iden ig?
+ column = ig? iden ig? <':'> ig? iden ig? directive?
+ directive  = <'@'> iden <'('> iden <':'>  <'\"'>template-str<'\"'> <')'>
+ template-str = #'[_A-Za-z0-9\\{\\}\\.]*'
  column-name = iden
  <iden>   = #'[_A-Za-z][_A-Za-z0-9]*'
  <ig>     = <#'(?:[\\s\\r\\n\\t\\u0020,\\ufeff]|#[\\t\\u0020-\\uffff]*)+'>
 " :output-format :hiccup
   :auto-whitespace :comma)
+
+(parse-idl table-basic2)
+(parse-idl table-basic)
 
 (def parse parse-idl)
 

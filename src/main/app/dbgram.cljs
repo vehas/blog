@@ -10,12 +10,16 @@
     ["codemirror/mode/javascript/javascript"]
     ["prismjs/components/prism-graphql"]
     ["codemirror-graphql/mode"]
+    ["faker/locale/en" :as faker]
     [goog.string :as gstring]
     [goog.string.format]
     ["sql.js" :default initSqlJs]
     ;["codemirror/lib/codemirror.css"]
     [app.dbgram.parser :as parser]))
 
+(comment
+  (print ::f (.fake faker "{{name.lastName}}"))
+  (print ::a (.firstName (.-name faker))))
 
 (def code-val (r/atom parser/table-basic))
 
@@ -136,7 +140,7 @@
                 :height 150
        ;         :overflow-x "scroll"
        ;         :flex 1
-                :width 300}}
+                :width 500}}
 
        [:> CodeMirror
            {:style {:background-color "green"
