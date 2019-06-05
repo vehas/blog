@@ -62,6 +62,7 @@
                                       [k (mapv (comp vec next) v)]))))))))))
 
 (comment
+  (js/d ::e :A)
   (gen-table table-basic))
     ;    tables (:content ast)]
     ;(->> tables

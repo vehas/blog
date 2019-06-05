@@ -2,6 +2,7 @@
   (:require
     [re-frame.core :as f]
     [reagent.core :as r]
+    [clojure.string :as str]
     ["react-simple-code-editor" :default editor]
     ["react-draggable" :default drag]
     ["prismjs/components/prism-core" :refer [highlight, languages]]
@@ -9,12 +10,16 @@
     ["codemirror/mode/javascript/javascript"]
     ["prismjs/components/prism-graphql"]
     ["codemirror-graphql/mode"]
+    [goog.string :as gstring]
+    [goog.string.format]
     ["sql.js" :default initSqlJs]
     ;["codemirror/lib/codemirror.css"]
     [app.dbgram.parser :as parser]))
 
 
 (def code-val (r/atom parser/table-basic))
+
+(def sql-generator (r/atom nil))
 
 (defn table [{:keys [table-name column]}]
   (print ::taa table-name column)
@@ -36,6 +41,23 @@
 ;[table table-data]])
 (defonce sql-db (atom nil))
 
+(def db-new (atom {}))
+
+(defn new-db [create-statement]
+  (let [db-ref  (atom {})
+        _       (-> (initSqlJs)
+                    (.then (fn [sql]
+                             ;(reset! sql-generator sql)
+                             (let [_  (js/d ::sql sql)
+                                   db (sql.Database.)]
+                               (js/d ::db db)
+                               (-> db
+                                   (.run create-statement))
+                               (reset! db-new db))))
+                    (.catch (fn [err]
+                              (print "error : " err))))]
+    db-ref))
+
 (comment
   (let [table "CREATE TABLE hello (a int, b char);
                INSERT INTO hello VALUES (0, 'hello');
@@ -43,10 +65,40 @@
     (print (.run @sql-db table)))
   (-> @sql-db
       (.exec "select * from hello")
-      (js/console.log)))
+      (js/console.log))
+  (deref db-new)
+  (-> @db-new
+      (.exec "insert into user values (1, 'jefooo')"))
+  (-> @db-new
+      (.exec "insert into user values (0, 'vee')"))
+  (-> @db-new
+      (.exec "select * from user"))
+  (-> @db-new
+      (.exec "SELECT name FROM sqlite_master WHERE type='table'")))
+
+(defn create-table [t-data]
+  (->> t-data
+       (map (fn [{:keys [table-name column]}]
+             (str (gstring/format "CREATE TABLE %s (" table-name)
+                  (str/join " ," (->> column
+                                   (map (fn [[schema-name type]]
+                                         (print schema-name type)
+                                         (gstring/format "%s %s" schema-name type)))))
+                  ");")))))
+(comment
+  (let [t '({:table-name "user",
+             :column [["id" "Int"]
+                      ["name" "String"]]})]
+    (create-table t)))
+             ;{:table-name "pet"
+             ; :column [["owner_id" "Int"]]})]))
+
+
+
 (defn sqlite []
   (let [_ (-> (initSqlJs)
               (.then (fn [sql]
+                       (reset! sql-generator sql)
                        (let [_  (js/console.log "sql : " sql)
                              db (sql.Database.)]
                          (print "db : "db)
@@ -54,11 +106,25 @@
               (.catch (fn [err]
                         (print "error : " err))))]
     (fn []
-      [:div "db start"])))
+      [:div
+       [:div "sqlite"]
+       [:button {:on-click (fn []
+                             (let [g-tables (parser/gen-table @code-val)
+                                   _  (js/d ::g g-tables)
+                                   tables (str/join " " (create-table g-tables))
+                                   _  (reset! db-new @(new-db tables))]
+                               (js/console.log ::click tables @db-new)))}
+        "gen table"]])))
+
+
+(comment)
+
+
 (defn main []
   (let [code @code-val
-        tables-data  (parser/gen-table code)]
-    (js/console.log ::t tables-data)
+        tables-data  (parser/gen-table code)
+        sqlite-create-table (create-table tables-data)]
+    ;(js/console.log ::t tables-data sqlite-create-table)
     [:div
      [:h1 "start dbgram using re-frame"]
      [:div {:style {:display "flex"
