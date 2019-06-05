@@ -44,19 +44,22 @@
 
 (defn gen-table [table-code]
   (let [ast (parse-idl table-code)
+        _   (print ::a (insta/failure? ast))
         ast-val (next ast)]
-    ;(print ::a ast-val)
-    (->> ast-val
-         (map (fn [[type  & content]]
-                (->> content
-                    (group-by first)
-                    (m/map-kv (fn [k v]
-                                (case k
+    (print ::a ast-val)
+    (if (insta/failure? ast)
+        []
+        (->> ast-val
+             (map (fn [[type  & content]]
+                    (->> content
+                        (group-by first)
+                        (m/map-kv (fn [k v]
+                                    (case k
 
-                                  :table-name
-                                  [k (get-in v [0 1])]
-                                  :column
-                                  [k (mapv (comp vec next) v)])))))))))
+                                      :table-name
+                                      [k (get-in v [0 1])]
+                                      :column
+                                      [k (mapv (comp vec next) v)]))))))))))
 
 (comment
   (gen-table table-basic))

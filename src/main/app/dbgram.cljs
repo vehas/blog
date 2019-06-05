@@ -4,6 +4,13 @@
     [reagent.core :as r]
     ["react-simple-code-editor" :default editor]
     ["react-draggable" :default drag]
+    ["prismjs/components/prism-core" :refer [highlight, languages]]
+    ["react-codemirror2" :rename {UnControlled CodeMirror}]
+    ["codemirror/mode/javascript/javascript"]
+    ["prismjs/components/prism-graphql"]
+    ["codemirror-graphql/mode"]
+    ["sql.js" :default initSqlJs]
+    ;["codemirror/lib/codemirror.css"]
     [app.dbgram.parser :as parser]))
 
 
@@ -24,8 +31,30 @@
 (defn drag-table [table-info]
   ;[:> drag {}
   ; (r/as-element [:a])
+   ^{:key (:table-name table-info)}
    [table table-info])
 ;[table table-data]])
+(defonce sql-db (atom nil))
+
+(comment
+  (let [table "CREATE TABLE hello (a int, b char);
+               INSERT INTO hello VALUES (0, 'hello');
+               INSERT INTO hello VALUES (1, 'world');"]
+    (print (.run @sql-db table)))
+  (-> @sql-db
+      (.exec "select * from hello")
+      (js/console.log)))
+(defn sqlite []
+  (let [_ (-> (initSqlJs)
+              (.then (fn [sql]
+                       (let [_  (js/console.log "sql : " sql)
+                             db (sql.Database.)]
+                         (print "db : "db)
+                         (reset! sql-db db))))
+              (.catch (fn [err]
+                        (print "error : " err))))]
+    (fn []
+      [:div "db start"])))
 (defn main []
   (let [code @code-val
         tables-data  (parser/gen-table code)]
@@ -34,36 +63,42 @@
      [:h1 "start dbgram using re-frame"]
      [:div {:style {:display "flex"
                     :width 500
-                    :background-color "pink"}}
-      [:div {:style {:background-color "red"
-                     :height 300
-                     :overflow-x "scroll"
-                     :flex 1
-                     :width 300}}
+                    :background-color "pink"
+                    :height 300}}
+      [:div
+       {:style {:background-color "red"
+                :height 150
+       ;         :overflow-x "scroll"
+       ;         :flex 1
+                :width 300}}
 
-       [:> editor
+       [:> CodeMirror
            {:style {:background-color "green"
-                    ;:rows 20
-                    ;:overflow-x "scroll"
-                    :white-space "nowrap"
-                    :font-family "inconsolata"}
-            :value code
-            :onValueChange (fn [new-code]
-                             ;(print new-code)
-                             ;(print (parser/parse new-code))
-                             (reset! code-val new-code))
-            :highlight (fn [code]
-                         (print ::c code)
-                         code)}]]
+                    :border "1px solid #eee"
+                    :height "auto"};}
+           ;         :rows 20
+           ;         :overflow-x "scroll"
+                   ;:white-space "nowrap"
+                   ;:font-family "inconsolata"
+            :value parser/table-basic
+            :options {:lineNumbers true
+                      :mode "graphql"
+                      :size [nil "100"]}
+            :onUpdate (fn [editor update]
+                        (print editor update))
+            :onChange (fn [editor data value]
+                        ;(print editor data value)
+                        (print (parser/parse value))
+                        (reset! code-val value))}]]
+            ;:highlight (fn [code]
+            ;             (print ::c code)
+            ;             (highlight code (.-graphql languages))))]]
       [:div {:style {:flex 2}}
        (->> tables-data
-            (map drag-table))]]]))
-       ;[:> drag {}
-       ;    (r/as-element
-       ;      [:div
-       ;       [table {:table-name "t2-nam"
-       ;               :column [["c2-3" "int"]
-       ;                        ["c2-2" "string"]]}]])]]]]))
+            (map drag-table))]]
+     [:div
+      [:div "test sql js"]
+      [sqlite]]]))
 
 
 (defn mount-root []
