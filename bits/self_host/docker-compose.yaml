@@ -1,0 +1,118 @@
+version: "3"
+services:
+  flame:
+    image: pawelmalak/flame:latest
+    container_name: flame
+    volumes:
+      - /Users/Home/self_host/flame:/app/data
+    ports:
+      - 5005:5005
+    restart: unless-stopped
+  
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    volumes:
+      - /Users/Home/self_host/vaultwarden:/data
+    ports:
+      - 5080:80
+    restart: unless-stopped
+  
+  linkding:
+    image: sissbruecker/linkding:latest
+    container_name: linkding
+    ports:
+      - 5090:9090
+    volumes:
+      - /Users/Home/self_host/linkding:/etc/linkding/data
+    restart: unless-stopped
+
+  transmission:
+    image: ghcr.io/linuxserver/transmission
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Bangkok
+      # - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+      # - USER=username #optional
+      # - PASS=password #optional
+      # - WHITELIST=iplist #optional
+      # - HOST_WHITELIST=dnsnane list #optional
+    volumes:
+      - /Users/Home/self_host/transmission_config:/config
+      - /Users/Home/self_host/transmission_downloads:/downloads
+      - /Users/Home/self_host/transmission_watch:/watch
+    ports:
+      - 5091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    volumes:
+      - /Users/Home/self_host/uptime-kuma:/app/data
+    ports:
+      - 5031:3001
+
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    volumes:
+      - /Users/Home/self_host/uptime-kuma:/app/data
+    ports:
+      - 5031:3001
+
+  monica:
+    image: monica:apache
+    container_name: monica
+    depends_on:
+      - mysql_db
+    ports:
+      - 5088:80
+    environment:
+      - DB_HOST=mysql_db
+      - DB_USERNAME=monica
+      - DB_PASSWORD=secret
+    volumes:
+      - /Users/Home/self_host/monica:/var/www/html/storage
+    restart: always
+
+  mysql_db:
+    image: mysql:5.7
+    container_name: mysql_db
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=monica
+      - MYSQL_USER=monica
+      - MYSQL_PASSWORD=secret
+    volumes:
+      - /Users/Home/self_host/mysql:/var/lib/mysql
+    restart: always
+
+  huginn:
+    image: huginn/huginn
+    container_name: huginn
+    depends_on:
+      - mysql_db
+    ports:
+      - 5073:3000
+    environment:
+      - HUGINN_DATABASE_NAME=huginn
+      - HUGINN_DATABASE_USERNAME=huginn
+      - HUGINN_DATABASE_PASSWORD=secret
+    restart: always
+
+  mysql_huginn_db:
+    image: mysql:lastest
+    container_name: mysql_huginn_db
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=huginn
+      - MYSQL_USER=huginn
+      - MYSQL_PASSWORD=secret
+    volumes:
+      - /Users/Home/self_host/huginn_mysql:/var/lib/mysql
+    restart: always
