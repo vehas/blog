@@ -78,7 +78,7 @@ services:
       - DB_PASSWORD=secret
     volumes:
       - /Users/Home/self_host/monica:/var/www/html/storage
-    restart: always
+    restart: unless-stopped
 
   mysql_db:
     image: mysql:5.7
@@ -90,7 +90,7 @@ services:
       - MYSQL_PASSWORD=secret
     volumes:
       - /Users/Home/self_host/mysql:/var/lib/mysql
-    restart: always
+    restart: unless-stopped
 
   huginn:
     image: huginn/huginn
@@ -107,7 +107,7 @@ services:
       - HUGINN_DATABASE_PASSWORD=secret
       - MYSQL_PORT_3306_TCP_ADDR=mysql_huginn_db
       - INVITATION_CODE=code
-    restart: always
+    restart: unless-stopped
 
   mysql_huginn_db:
     image: mysql
@@ -119,7 +119,7 @@ services:
       - MYSQL_PASSWORD=secret
     volumes:
       - /Users/Home/self_host/huginn_mysql:/var/lib/mysql
-    restart: always
+    restart: unless-stopped
 
 # https://containers.fan/posts/wireguard-vpn-on-docker/
   wireguard:
