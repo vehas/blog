@@ -141,8 +141,30 @@ services:
     volumes:
       - /Users/Home/self_host/wireguard/config/wireguard:/config
       - /Users/Home/self_host/wireguard/lib/modules:/lib/modules
+      - /Users/Home/self_host/wireguard/etc/wireguard:/etc/wireguard
     ports:
       - 51820:51820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
+
+# https://github.com/ngoduykhanh/wireguard-ui
+# admin:admin
+  wgui:
+    image: ngoduykhanh/wireguard-ui:latest
+    container_name: wgui
+    ports:
+      - 5054:5000
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    volumes:
+      - /Users/Home/self_host/wireguard/db:/app/db
+      - /Users/Home/self_host/wireguard/etc/wireguard:/etc/wireguard
+# weaviate
+# https://www.semi.technology/developers/weaviate/current/getting-started/installation.html#docker-compose
+
+# webtop
+# https://fleet.linuxserver.io/image?name=linuxserver/webtop
+# https://www.youtube.com/watch?v=Gd9bvdkIXOQ
