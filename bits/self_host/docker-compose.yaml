@@ -96,17 +96,21 @@ services:
     image: huginn/huginn
     container_name: huginn
     depends_on:
-      - mysql_db
+      - mysql_huginn_db
+    links: 
+      - "mysql_huginn_db:mysql"
     ports:
       - 5073:3000
     environment:
       - HUGINN_DATABASE_NAME=huginn
       - HUGINN_DATABASE_USERNAME=huginn
       - HUGINN_DATABASE_PASSWORD=secret
+      - MYSQL_PORT_3306_TCP_ADDR=mysql_huginn_db
+      - INVITATION_CODE=code
     restart: always
 
   mysql_huginn_db:
-    image: mysql:lastest
+    image: mysql
     container_name: mysql_huginn_db
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=true
@@ -116,3 +120,29 @@ services:
     volumes:
       - /Users/Home/self_host/huginn_mysql:/var/lib/mysql
     restart: always
+
+# https://containers.fan/posts/wireguard-vpn-on-docker/
+  wireguard:
+    image: ghcr.io/linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - SERVERURL=wireguard.example.com
+      - SERVERPORT=51820
+      - PEERS=ruan,mobile
+      - PEERDNS=192.168.0.114 
+      - INTERNAL_SUBNET=10.64.1.0
+      - ALLOWEDIPS=0.0.0.0/0
+    volumes:
+      - /Users/Home/self_host/wireguard/config/wireguard:/config
+      - /Users/Home/self_host/wireguard/lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
